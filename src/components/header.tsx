@@ -1,20 +1,26 @@
 import React from "react";
-import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Link } from "gatsby";
 
-const Header: React.FC = ({ siteTitle }) => (
-  <header>
+const HeaderStyles = styled.header`
+  background-color: black;
+  padding: 0 25px;
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+`;
+
+const Header: React.FC<{ siteTitle: string }> = ({ siteTitle }) => (
+  <HeaderStyles>
     <div>
       <h1>
         <Link to="/">{siteTitle}</Link>
       </h1>
     </div>
-  </header>
+  </HeaderStyles>
 );
-
-Header.propTypes = {
-  siteTitle: PropTypes.string,
-};
 
 Header.defaultProps = {
   siteTitle: ``,

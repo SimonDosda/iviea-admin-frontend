@@ -3,6 +3,7 @@ import { PageProps, graphql } from "gatsby";
 
 import { getProduct, getProducts } from "../services/printful";
 import { ProductT } from "../models/product";
+import Layout from "../components/layout";
 
 interface DataProps {
   products: {
@@ -29,7 +30,7 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
   };
 
   return (
-    <>
+    <Layout>
       <ul>
         {data.products.nodes.map((product) => (
           <li key={product.strapiId}>{product.name}</li>
@@ -50,7 +51,7 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
             ))}
         </div>
       ))}
-    </>
+    </Layout>
   );
 };
 
