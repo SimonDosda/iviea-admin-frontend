@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { PageProps, graphql } from "gatsby";
 
-import { getProduct, getProducts } from "../services/printful";
+import { getProducts, getProduct } from "../services/printful";
 import { ProductT } from "../models/product";
 import Layout from "../components/layout";
+import Product from "../components/product";
 
 interface DataProps {
   products: {
@@ -38,18 +39,7 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
       </ul>
       <button onClick={fetchProducts}>Fetch</button>
       {products.map((product) => (
-        <div key={product.id}>
-          <h2>{product.name}</h2>
-          {product.images.map((src) => (
-            <img key={src} src={src} />
-          ))}
-          {product.variants.length &&
-            product.variants.map((variant) => (
-              <div key={variant.id}>
-                {variant.name} - {variant.price} €
-              </div>
-            ))}
-        </div>
+        <Product key={product.id} product={product} />
       ))}
     </Layout>
   );
