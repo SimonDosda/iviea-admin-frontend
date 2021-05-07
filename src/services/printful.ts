@@ -1,20 +1,14 @@
-import axios from "axios";
-
 import {
   PrintfulProductT,
   PrintfulProductWithVariants,
   PrintfulVariantT,
 } from "../models/printful";
 import { ProductT, VariantT } from "../models/product";
-
-const printfultApi = axios.create({
-  baseURL: `${process.env.GATSBY_API_URL}/printful`,
-  timeout: 10000,
-});
+import api from "./api";
 
 export async function getProducts(): Promise<PrintfulProductT[]> {
-  const { status, data } = await printfultApi.get<PrintfulProductT[]>(
-    "/products",
+  const { status, data } = await api.get<PrintfulProductT[]>(
+    "/printful/products",
   );
   if (status !== 200) {
     console.error(data);
@@ -24,8 +18,8 @@ export async function getProducts(): Promise<PrintfulProductT[]> {
 }
 
 export async function getProduct(productId: number): Promise<ProductT> {
-  const { status, data } = await printfultApi.get<PrintfulProductWithVariants>(
-    `/products/${productId}`,
+  const { status, data } = await api.get<PrintfulProductWithVariants>(
+    `/printful/products/${productId}`,
   );
   if (status !== 200) {
     console.error(data);
