@@ -29,6 +29,18 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
       }
     }
   };
+  const removeImage = ({ id }: ProductT) => {
+    const removeProductImage = (src: string) =>
+      setProducts([
+        ...products.map((product) => {
+          if (product.id !== id) {
+            return product;
+          }
+          return { ...product, images: product.images.filter((image) => image !== src) };
+        }),
+      ]);
+    return removeProductImage;
+  };
 
   return (
     <Layout>
@@ -39,7 +51,7 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
       </ul>
       <button onClick={fetchProducts}>Fetch</button>
       {products.map((product) => (
-        <Product key={product.id} product={product} />
+        <Product key={product.id} product={product} removeImage={removeImage(product)} />
       ))}
     </Layout>
   );
