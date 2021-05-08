@@ -3,7 +3,7 @@ import {
   PrintfulProductWithVariants,
   PrintfulVariantT,
 } from "../models/printful";
-import { ProductT, VariantT } from "../models/product";
+import { Image, ProductT, VariantT } from "../models/product";
 import { getWithToken } from "./api";
 
 export async function getProducts(): Promise<PrintfulProductT[]> {
@@ -17,13 +17,15 @@ export async function getProduct(productId: number): Promise<ProductT> {
 
 function parseProduct({ sync_product, sync_variants }: PrintfulProductWithVariants): ProductT {
   return {
-    id: sync_product.id,
+    uid: sync_product.id,
     name: sync_product.name,
+    slug: null,
+    description: null,
     variants: sync_variants.map(parseVariant),
-    images: sync_variants.reduce((images, variant) => {
+    images: sync_variants.reduce((images: Image[], variant: PrintfulVariantT, index: number) => {
       variant.files.forEach(({ preview_url }) => {
-        if (images.indexOf(preview_url) < 0) {
-          images.push(preview_url);
+        if (images.map(({ url }) => url).indexOf(preview_url) < 0) {
+          images.push({ url: preview_url, name: `${sync_product.name}-${index + 1}` });
         }
       });
       return images;
@@ -31,10 +33,12 @@ function parseProduct({ sync_product, sync_variants }: PrintfulProductWithVarian
   };
 }
 
-function parseVariant({ id, name, retail_price, sku }: PrintfulVariantT): VariantT {
+function parseVariant({ id, name, retail_price, sku, product }: PrintfulVariantT): VariantT {
   return {
-    id,
+    uid: id,
     name,
+    description: product.name,
+    size: "a",
     price: parseFloat(retail_price),
     sku,
   };

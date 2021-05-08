@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ProductT } from "../models/product";
+import { Image, ProductT } from "../models/product";
 
 const ProductStyles = styled.div`
   display: grid;
@@ -49,18 +49,22 @@ const ProductStyles = styled.div`
 
 interface ProductParams {
   product: ProductT;
-  removeImage: (src: string) => void;
+  removeImage: (image: Image) => void;
 }
+
+const getUrl = ({ url }: Image) => {
+  return url.startsWith("/") ? process.env.GATSBY_API_URL + url : url;
+};
 
 const Product: React.FC<ProductParams> = ({ product, removeImage }) => {
   return (
     <ProductStyles>
       <h2>{product.name}</h2>
       <div className="list">
-        {product.images.map((src) => (
-          <div className="image">
-            <img key={src} src={src} />
-            <span className="cross" onClick={() => removeImage(src)}>
+        {product.images.map((image) => (
+          <div className="image" key={image.name}>
+            <img src={getUrl(image)} />
+            <span className="cross" onClick={() => removeImage(image)}>
               x
             </span>
           </div>
@@ -69,8 +73,8 @@ const Product: React.FC<ProductParams> = ({ product, removeImage }) => {
       <div className="list">
         {product.variants.length &&
           product.variants.map((variant) => (
-            <div className="variant">
-              <div key={variant.id}>
+            <div className="variant" key={variant.uid}>
+              <div>
                 {variant.name} : {variant.price} €
               </div>
             </div>

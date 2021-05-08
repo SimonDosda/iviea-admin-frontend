@@ -1,13 +1,22 @@
 export interface ProductT {
-  id: number;
+  uid: number;
   name: string;
+  slug: string;
+  description: string;
   variants: VariantT[];
-  images: string[];
+  images: Image[];
 }
 
 export interface VariantT {
-  id: number;
+  uid: number;
   name: string;
   price: number;
   sku: string;
+  description: string;
+  size: string;
+}
+
+export interface Image {
+  name;
+  url;
 }

@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import { PageProps, graphql } from "gatsby";
 
-import { getProducts, getProduct } from "../services/printful";
-import { ProductT } from "../models/product";
+import { getProduct, getProducts } from "../services/printful";
+import { Image, ProductT } from "../models/product";
 import Layout from "../components/layout";
 import Product from "../components/product";
 
 interface DataProps {
   products: {
-    nodes: {
-      strapiId;
-      name;
-      description;
-    }[];
+    nodes: ProductT[];
   };
 }
 
@@ -29,14 +25,14 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
       }
     }
   };
-  const removeImage = ({ id }: ProductT) => {
-    const removeProductImage = (src: string) =>
+  const removeImage = ({ uid }: ProductT) => {
+    const removeProductImage = ({ url }: Image) =>
       setProducts([
         ...products.map((product) => {
-          if (product.id !== id) {
+          if (product.uid !== uid) {
             return product;
           }
-          return { ...product, images: product.images.filter((image) => image !== src) };
+          return { ...product, images: product.images.filter((image) => image.url !== url) };
         }),
       ]);
     return removeProductImage;
@@ -44,14 +40,12 @@ const IndexPage: React.FC<PageProps<DataProps>> = ({ data }) => {
 
   return (
     <Layout>
-      <ul>
-        {data.products.nodes.map((product) => (
-          <li key={product.strapiId}>{product.name}</li>
-        ))}
-      </ul>
+      {data.products.nodes.map((product) => (
+        <Product key={product.uid} product={product} removeImage={removeImage(product)} />
+      ))}
       <button onClick={fetchProducts}>Fetch</button>
       {products.map((product) => (
-        <Product key={product.id} product={product} removeImage={removeImage(product)} />
+        <Product key={product.uid} product={product} removeImage={removeImage(product)} />
       ))}
     </Layout>
   );
@@ -63,9 +57,22 @@ export const query = graphql`
   query {
     products: allStrapiProduct {
       nodes {
-        strapiId
+        uid
         name
+        slug
         description
+        images {
+          name
+          url
+        }
+        variants {
+          uid
+          name
+          sku
+          description
+          size
+          price
+        }
       }
     }
   }
