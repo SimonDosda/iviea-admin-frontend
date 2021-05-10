@@ -22,14 +22,20 @@ function parseProduct({ sync_product, sync_variants }: PrintfulProductWithVarian
     slug: null,
     description: null,
     variants: sync_variants.map(parseVariant),
-    images: sync_variants.reduce((images: Image[], variant: PrintfulVariantT, index: number) => {
-      variant.files.forEach(({ preview_url }) => {
-        if (images.map(({ url }) => url).indexOf(preview_url) < 0) {
-          images.push({ url: preview_url, name: `${sync_product.name}-${index + 1}` });
-        }
-      });
-      return images;
-    }, []),
+    images: sync_variants.reduce(
+      (images: Image[], variant: PrintfulVariantT, variantIndex: number) => {
+        variant.files.forEach(({ preview_url }, fileIndex) => {
+          if (images.map(({ url }) => url).indexOf(preview_url) < 0) {
+            images.push({
+              url: preview_url,
+              name: `${sync_product.name}-${variantIndex + 1}${fileIndex + 1}`,
+            });
+          }
+        });
+        return images;
+      },
+      [],
+    ),
   };
 }
 
